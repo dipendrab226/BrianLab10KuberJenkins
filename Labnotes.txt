@@ -1,0 +1,133 @@
+DOCKER:
+	THis is similar to VM but smaller 
+	It creates the wrapper around your program.
+	To run a program on another server,you have install frameworks like Node on the server.
+	We can avoid that by using docker container,
+
+Dockerfile: 
+	has instruction on how to make the docker image, in order to create a docker image we need a base image and we will be using linux,
+	we need launch the dockerfile, it starts all the container and handles them
+
+Dockerimage: 
+	A Docker image is a read-only template that contains a set of instructions for creating a container that can run on the Docker platform
+	Only thing to run it, docker run environment
+
+Dockercontainer:
+	It will have barebone linux, node,
+	main difference with VM: Docker container doesn't have the entire OS, but has the minimun thing to run
+	it mimics the VM, when these run, it run pretty close to the running itself
+
+docker-compose.yml (stands for YAML)
+	similar to Json(key value pair) but the delimiter is "tab"
+	launch container file, 
+	test running redis via swam, automatically figure where to launch 
+	current node (tl6z7of5t4vo9eqb9i8xt602w) is now a manager.
+	docker swarm join --token
+
+Program meant to run a lot of docker container: 
+	DockerSwarm or Kubernetes
+	Use of containarized apps: based on traffic, we turn on and turn off containers, running on server
+
+
+DOCKER SWARM 
+	It is a container manager, 
+	You can pick docker swarm or kubernetes, docker swarm is simple.
+	Most website are on docker swarm on top of cubernetty.
+	Program meant to run a lot of docker container: 
+	DockerSwarm or Kubernetes
+	Use of containarized apps: based on traffic, we turn on and turn off containers, running on server
+
+Fillingup docker file:
+        FROM: pick up the base linux flavor 
+	Expose 4000:By default port is not open 
+	COPY:This is gonna copy all the source file into the dockerfile (/main),we create a main, we copy everything into it
+	CMD : Once the linux image starts, run the node and pass it index.js, npm run runs inside the node:10-alphine(in this linux machine)
+        main (could name anything) 
+	TO run the actual program, you have to give command directive, once the linux
+    image start up you have to tell to do something ( using node and index.js)
+
+	Docker file can be an extension too We don't have front end for it. NPM runs
+	inside the container ( its like running index.js inside the container).
+
+"docker build -t express-demo ."   t for tag
+
+b72ef14ad231 ---id of the image we just made
+express.demo: latest -----tag name
+
+docker image ls
+
+express.demo        latest              b72ef14ad231        5 minutes ago       85.7MB
+node                10-alpine           947b2561f403        5 days ago          83.8MB
+
+		node is the linux image, express.demo is the image we created on top of the node image
+		express demo is the class equivalent
+
+		we gonna use to docker image to create a docker container 
+		-p stands for port,
+		 we gonna match the localhost(port) to the container's localhost(port)
+		match our 4000:4000 to its 4000
+
+$docker run -d -p 4000:4000 b72ef14ad231        //matching the port using the dockerfile id
+
+$docker container ls          // see the instantiated docker
+
+// ssh into the actual docker environment
+$docker exec -it a600f11b613b sh   // it--interactive, id of your container, command shell (ssh shell inside docker container)
+$exit
+
+$docker container stop a600f11b613b
+$ docker container ls     or $ docker ps   // should be empty
+
+(if you change the code you have to rebuild the image)
+Lets try to publish this to my account:
+
+$docker image ls
+cbb25b321734---image you wanna publish
+dibsbharatidocker---dockerhub ib
+express-demo---name of the app
+:
+dibs667lab10----any tag you can put
+
+$docker image  ls // will have a new one you just published
+                  // to pu
+$ docker tag cbb25b321734 dibsbharatidocker/express-demo:dibs667lab10
+$ docker push dibsbharatidocker/express-demo
+
+Why use docker??
+	Never have to worry about version mis matches ( Java, Python, Node)
+	make four images, and it makes four container
+
+dockercompose.yml ( similar to Json, key value pair, has space tab)
+	launch container file, test running redis via swam, automatically figure where to launch 
+	current node (tl6z7of5t4vo9eqb9i8xt602w) is now a manager.
+	docker swarm join --token
+
+$ docker swarm init    // one of the is the leader, if you start the swarm, you are the leader
+
+$ docker stack deploy -c docker-compose.yml swarm-demo
+
+swarm-demo_app automatically 
+	docker is run locally, it doesn't need anything, it charges you for image, 
+	if you want private, they charge you 
+	Container hosting: Here is the link to my docker image and they can run it for you
+	(companies like AWS, GOOGLE can run the container)
+
+
+$ docker service ls      // lists the services on the swarm: should see swarm-demo app
+
+$ docker stack remove swarm-demo
+
+$ docker swarm leave --force
+
+Cool thing about swarm: expand and contract the size of the cluster based on traffic load. Ex on black friday, open allthe containers
+	after that start shutting down the containers on other days. It saves money.
+
+we gonna use redis from the docker
+	// require is for backend and import is for front end
+	PLAIN SETUP:index.js is running on 3000, and we want to visit, and redis is running on (localhost:6379), Index can visit localhost 6379
+	DOCKER SETUP: webnet, each service gets another virtual network, app and redis are network, inside each you can have containers, redis 
+		itself is a container, container A perspective localhost literally means itself, to talk from "app" to "redis", you  have to give the 
+		host name as a service
+
+"." means the current 
+amount of ram the entire swarm is running
